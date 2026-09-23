@@ -15,7 +15,7 @@ const sectionInfo = [
   {key:'languages',name:'Languages',icon:'◌',fields:[['languages','Languages (comma separated)']]}
 ];
 const listSections = new Set(['experience','education','projects','certifications','awards','organizations','volunteer']);
-let resume,cover,saved,activeSection='personal',pendingApply=null,toastTimer,printTarget='resume';
+let resume,cover,saved,activeSection='personal',pendingApply=null,toastTimer,printTarget='resume',aiInFlight=false;
 try { resume = {...blank(),...JSON.parse(localStorage.getItem('cc-resume')||'{}')}; cover = JSON.parse(localStorage.getItem('cc-cover')||'{}'); saved = JSON.parse(localStorage.getItem('cc-saved')||'[]'); } catch {resume=blank();cover={};saved=[]}
 resume.personal={...blank().personal,...resume.personal};resume.skills={...blank().skills,...resume.skills};
 for(const key of listSections) if(!Array.isArray(resume[key]))resume[key]=[];
@@ -53,7 +53,17 @@ function renderPreview(){const p=resume.personal;const contact=[p.email,p.phone,
 function renderSaved(){const holder=$('#saved-documents');holder.innerHTML=saved.length?saved.map((d,i)=>`<div class="saved-item"><strong>${escapeHtml(d.name)}</strong><span>${escapeHtml(d.date)}</span><button data-load="${i}">Open</button><button data-delete="${i}" class="delete">Delete</button></div>`).join(''):'<p class="empty-docs">Your saved versions will appear here.</p>'}
 function renderCover(){const holder=$('#cover-fields');holder.innerHTML=coverFields.map(([key,label,type])=>type==='select'?`<div class="field"><label for="cover-tone">Tone</label><select id="cover-tone" data-key="tone">${['Professional','Confident','Simple','Friendly'].map(t=>`<option ${cover.tone===t?'selected':''}>${t}</option>`).join('')}</select></div>`:fieldHtml(key,label,type,cover[key]|| (key==='name'?resume.personal.name:''),`cover-${key}`)).join('');$('#letter-text').value=cover.letter||'';$('#job-text').value=cover.job||''}
 function switchView(view){if(view==='cover'&&!filled(cover.name)&&filled(resume.personal.name)){$('#cover-name').value=resume.personal.name;cover.name=resume.personal.name;persist()}for(const b of document.querySelectorAll('.nav-item'))b.classList.toggle('active',b.dataset.view===view);for(const v of document.querySelectorAll('.view'))v.classList.toggle('active',v.id===`${view}-view`);history.replaceState(null,'',`#${view}`);scrollTo({top:0,behavior:'smooth'})}
-async function callAI(kind,text,context={}){const response=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind,text,context})});let data;try{data=await response.json()}catch{throw Error('The AI service returned an unexpected response. Please try again.')}if(!response.ok)throw Error(data.error||'AI is unavailable right now. Please try again.');if(!data.result)throw Error('No suggestion came back. Please try again.');return data.result}
+async function callAI(kind,text,context={}){
+  if(aiInFlight)throw Error('Another AI request is still running. Wait for it to finish, then try again.');
+  aiInFlight=true;
+  try{
+    const response=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({kind,text,context})});
+    let data;try{data=await response.json()}catch{throw Error('The AI service returned an unexpected response. Please try again.')}
+    if(!response.ok)throw Error(data.error||'AI is unavailable right now. Please try again.');
+    if(!data.result)throw Error('No suggestion came back. Please try again.');
+    return data.result;
+  }finally{aiInFlight=false}
+}
 async function suggest(kind,index,button){let text='',apply;
   if(kind==='summary'){text=resume.summary||[resume.personal.title,...resume.experience.map(x=>x.details),...resume.projects.map(x=>x.description)].filter(filled).join('\n');apply=v=>resume.summary=v}
   if(kind==='experience'){text=resume.experience[index]?.details||'';apply=v=>resume.experience[index].details=v}
