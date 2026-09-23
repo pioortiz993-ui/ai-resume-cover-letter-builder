@@ -1,0 +1,10 @@
+{
+  "name": "ai-resume-cover-letter-builder",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "node dev-server.mjs"
+  }
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142b59">
+  <title>AI Resume & Cover Letter Builder</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#resume" aria-label="AI Resume Builder home"><span class="brand-icon">✦</span><span>career<span class="brand-em">craft</span><small>AI RESUME STUDIO</small></span></a>
+    <nav class="nav" aria-label="Main navigation">
+      <button class="nav-item active" data-view="resume">Resume builder</button>
+      <button class="nav-item" data-view="cover">Cover letter</button>
+      <button class="nav-item" data-view="analyze">Job analyzer</button>
+    </nav>
+    <span class="private-label"><span class="private-dot"></span> Private workspace</span>
+  </header>
+
+  <main class="shell">
+    <section class="intro">
+      <div><div class="eyebrow"><span class="eyebrow-line"></span> Your career workspace</div><h1>Make your next application <em>count.</em></h1><p>Build a clear resume, tailor a cover letter, and find the right words with Gemini AI.</p></div>
+      <div class="intro-badge"><span class="badge-spark">✦</span><div><strong>Made for your next move</strong><small>Your drafts stay in this browser · <span id="ai-status">Checking AI</span></small></div></div>
+    </section>
+
+    <section id="resume-view" class="view active" aria-labelledby="resume-title">
+      <div class="view-head"><div><div class="section-kicker">01 / BUILD</div><h2 id="resume-title">Your resume</h2><p>Start with what you know. Your preview updates as you type.</p></div><div class="head-actions"><button id="save-resume" class="btn secondary">Save version</button><button id="print-resume" class="btn primary">↓ &nbsp;Download PDF</button></div></div>
+      <div class="builder-grid">
+        <div class="editor-column">
+          <div class="panel progress-panel"><div class="progress-title"><span>YOUR PROGRESS</span><strong id="progress-label">Getting started</strong></div><div class="progress-track"><div id="progress-bar"></div></div><p>Fill in only the sections relevant to you.</p></div>
+          <div class="panel editor-panel"><div class="panel-heading"><div><span class="mini-eyebrow">EDIT YOUR DETAILS</span><h3>Resume sections</h3></div><span class="autosave">● Auto-saved locally</span></div><div id="sections" class="section-list"></div></div>
+          <div class="panel documents-panel"><div class="panel-heading"><div><span class="mini-eyebrow">YOUR WORK</span><h3>Saved versions</h3></div></div><div id="saved-documents"></div></div>
+        </div>
+        <div class="preview-column"><div class="preview-toolbar"><div><span class="mini-eyebrow">LIVE PREVIEW</span><h3>Application-ready layout</h3></div><label class="template-picker">Template <select id="template"><option value="modern">Modern</option><option value="classic">Classic</option><option value="minimal">Minimal</option></select></label></div><div id="resume-preview" class="paper modern" aria-live="polite"></div><p class="preview-foot">Print to PDF from your browser. Review every detail before sharing.</p></div>
+      </div>
+    </section>
+
+    <section id="cover-view" class="view" aria-labelledby="cover-title"><div class="view-head"><div><div class="section-kicker">02 / TAILOR</div><h2 id="cover-title">Cover letter</h2><p>Use your resume details to write a letter for one specific role.</p></div><div class="head-actions"><button id="save-letter" class="btn secondary">Save letter</button><button id="print-letter" class="btn primary">↓ &nbsp;Download PDF</button></div></div><div class="two-column"><div class="panel form-panel"><div class="panel-heading"><div><span class="mini-eyebrow">APPLICATION DETAILS</span><h3>Tell us about the role</h3></div></div><div id="cover-fields" class="form-grid"></div><button id="generate-letter" class="btn primary full"><span>✦</span> Generate with Gemini</button><p class="form-note">The draft uses only details you provide. Check it before sending.</p></div><div class="panel letter-panel"><div class="panel-heading"><div><span class="mini-eyebrow">EDITABLE DRAFT</span><h3>Your cover letter</h3></div><button id="improve-letter" class="btn text-btn">✦ Improve wording</button></div><textarea id="letter-text" aria-label="Editable cover letter" placeholder="Your generated letter will appear here. You can also write your own draft and improve it with AI."></textarea><span class="letter-tip">Tip: customize the greeting and specific reasons for applying.</span></div></div></section>
+
+    <section id="analyze-view" class="view" aria-labelledby="analyze-title"><div class="view-head"><div><div class="section-kicker">03 / ALIGN</div><h2 id="analyze-title">Job analyzer</h2><p>Find the skills and keywords a role actually asks for.</p></div></div><div class="two-column"><div class="panel form-panel"><div class="panel-heading"><div><span class="mini-eyebrow">PASTE A JOB POST</span><h3>Understand the opportunity</h3></div></div><label for="job-text">Job description</label><textarea id="job-text" placeholder="Paste the job posting here, including responsibilities and requirements..."></textarea><button id="analyze-job" class="btn primary full">✦ Analyze with Gemini</button><p class="form-note">Only add skills you genuinely have to your resume.</p></div><div class="panel analysis-panel"><div class="panel-heading"><div><span class="mini-eyebrow">RESULTS</span><h3>What stands out</h3></div></div><div id="analysis-result" class="analysis-result empty-state"><span class="empty-icon">⌕</span><h4>Ready when you are</h4><p>Paste a job description and run the analysis to see relevant requirements and keywords.</p></div></div></div></section>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="suggestion-dialog" class="suggestion-dialog"><div class="dialog-top"><span class="mini-eyebrow">✦ GEMINI SUGGESTION</span><button id="close-dialog" class="close-btn" aria-label="Close">×</button></div><h2>Make it sound like you, at your best.</h2><p>Review the suggestion before applying it. AI can make mistakes.</p><div id="suggestion-text" class="suggestion-text"></div><div class="dialog-actions"><button id="discard-suggestion" class="btn secondary">Keep original</button><button id="apply-suggestion" class="btn primary">Apply suggestion</button></div></dialog>
+  <script src="/app.js" defer></script>
+</body>
+</html>
